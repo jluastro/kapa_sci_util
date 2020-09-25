@@ -47,13 +47,13 @@ def process_fits(directory, FITSfilename):
 
 	psf_size = sim_parameters['psf_size']
 	grid_size = sim_parameters['grid_size']
-	psf_parameters = np.zeros((grid_size,grid_size,4)) #x_fwhm, y_fwhm, theta, 50% encircled energy
+	psf_parameters = np.zeros((grid_size,grid_size,5)) #x_fwhm, y_fwhm, theta, 50% encircled energy, avg_fwhm
 	y_coords, x_coords = np.mgrid[:psf_size,:psf_size]
 	fit = fitting.LevMarLSQFitter()
 	data_masked = np.ma.empty((grid_size,grid_size,psf_size,psf_size))  	#mask out data in the wings
 	mask_level = np.zeros((grid_size,grid_size))
 
-	if plot_slices:
+	if plot_slices and (not os.path.exists(output_directory + 'gaussian_slice/' + sim_parameters['label'])):
 		os.makedirs(output_directory + 'gaussian_slice/' + sim_parameters['label'])
 
 	for i in range(grid_size):
@@ -67,10 +67,11 @@ def process_fits(directory, FITSfilename):
 			psf_parameters[i,j,1] = fitted_gauss.y_fwhm
 			psf_parameters[i,j,2] = fitted_gauss.theta.value
 			psf_parameters[i,j,3] = encircle_energy(data[i,j,:,:],fitted_gauss.y_mean.value,fitted_gauss.x_mean.value)
+			psf_parameters[i,j,4] = (fitted_gauss.x_fwhm + fitted_gauss.y_fwhm)/2
 			if plot_slices:
 				plot_slice(data,i,j,fitted_gauss,mask_level,output_directory,sim_parameters)
 
-	fwhm_grid = (psf_parameters[:,:,0] + psf_parameters[:,:,1] )/2.0 * sim_parameters['pixel_scale']
+	fwhm_grid = psf_parameters[:,:,4] * sim_parameters['pixel_scale']
 	encircled_grid = psf_parameters[:,:,3] * sim_parameters['pixel_scale']
 	datasquare = np.zeros((psf_size*grid_size,psf_size*grid_size))  #reshape the 4D cube into a 2D grid
 	for i in range(grid_size):
@@ -196,11 +197,14 @@ def plot_slice(data,i,j,fitted_gauss,mask_level,output_directory,sim_parameters)
 	plt.plot([0,psf_size],[mask_level[i,j],mask_level[i,j]])
 	plt.plot(data[i,j,60,:],'.-',label="data")
 	plt.plot(np.linspace(50,70,501),fitted_gauss(np.linspace(50,70,501),60),label="fit")
+	avg_fwhm = (fitted_gauss.x_fwhm + fitted_gauss.y_fwhm)/2
+	ax = plt.gca()
+	plt.text(0.9, 0.7,"FWHM = " + "  {:.1f}".format(avg_fwhm), horizontalalignment='center',verticalalignment='center',transform = ax.transAxes)
 	plt.legend()
 	plt.xlim([50, 70])
 	plt.xticks([50,55,60,65,70])
 	plt.ylim([0, np.max(data)])
-	plt.savefig(output_directory + "gaussian_slice/" + sim_parameters['label'] + '/' + str(10*j+i) + ".jpg", bbox_inches='tight')	
+	plt.savefig(output_directory + "gaussian_slice/" + sim_parameters['label'] + '/' + str(11*j+i) + ".jpg", bbox_inches='tight')	
 
 main()
 
