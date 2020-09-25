@@ -10,15 +10,16 @@ import os
 #FWHM and EE50, and plots the results as 2D grids.
 #By Matthew Freeman.
 
+# -----PARAMETERS-----
 input_directory = './fits_output/'
 output_directory = './plots/'
 fit_threshold = 0.05   	#all data below this fraction of the max will be masked out for the gaussian fit.
 plot_slices=False
+# --------------------
 
 def main():
 	if not os.path.exists(output_directory):
 		os.makedirs(output_directory)
-
 
 	for fits_filename in os.listdir(input_directory):
 		if fits_filename[-4:] == 'fits':
