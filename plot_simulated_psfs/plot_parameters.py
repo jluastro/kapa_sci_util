@@ -199,7 +199,7 @@ def plot_slice(data,i,j,fitted_gauss,mask_level,output_directory,sim_parameters)
 	plt.plot(np.linspace(50,70,501),fitted_gauss(np.linspace(50,70,501),60),label="fit")
 	avg_fwhm = (fitted_gauss.x_fwhm + fitted_gauss.y_fwhm)/2
 	ax = plt.gca()
-	plt.text(0.9, 0.7,"FWHM = " + "  {:.1f}".format(avg_fwhm), horizontalalignment='center',verticalalignment='center',transform = ax.transAxes)
+	plt.text(0.9, 0.7,"FWHM = " + "  {:.2f}".format(avg_fwhm), horizontalalignment='center',verticalalignment='center',transform = ax.transAxes)
 	plt.legend()
 	plt.xlim([50, 70])
 	plt.xticks([50,55,60,65,70])

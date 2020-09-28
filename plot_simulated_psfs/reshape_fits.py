@@ -1,5 +1,6 @@
 from astropy.io import fits
 import numpy as np
+import os
 
 # This python script takes in the strip of simulated psfs produced by Carlos and reformats them into a 4 dimensional array.
 # The dimensions are [y position of psf, x position of psf, y pixel in psf, x pixel in psf.]
@@ -37,7 +38,7 @@ TT_offsets = [[-1.1172, 0.1056],			#x,y offset of primary tip tilt star in arcse
 				[-0.1109,0.1364]
 				]	
 
-pixel_scale = 10.0/1000 #arcseconds per pixel
+pixel_scale = 20.81/1000 #arcseconds per pixel
 psf_spacing = 2.0   #spacing between generated psfs in arcseconds
 laser_radius = 7.6  #LGS asterism radius in arcseconds
 
