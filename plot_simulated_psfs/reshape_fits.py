@@ -7,10 +7,10 @@ import os
 # By Matthew Freeman
 
 #------PARAMETERS------
-directories = ['./KAPA_PDR_PSFs/darkMatter/', 				#Location of each FITS file
+directories = ['./KAPA_PDR_PSFs/darkMatter/', 													#Location of each FITS file
 				'./KAPA_PDR_PSFs/galacticCenter/',
 				'./KAPA_PDR_PSFs/galaxyFormation/',
-				'KAPA_PDR_PSFs/gasGiantPlanets/']
+				'./KAPA_PDR_PSFs/gasGiantPlanets/']
 
 FITSfilenames = ['PSF2D_Hband_NyqSampl_LgsAstRadius7p6arcsec_ZA30_5000iter_4LGSsquare.fits',		#Name of each data FITS file
 				'PSF2D_Hband_NyqSampl_LgsAstRadius7p6arcsec_ZA50_5000iter_4LGSsquare.fits',
@@ -18,7 +18,7 @@ FITSfilenames = ['PSF2D_Hband_NyqSampl_LgsAstRadius7p6arcsec_ZA30_5000iter_4LGSs
 				'PSF2D_Hband_NyqSampl_LgsAstRadius7p6arcsec_ZA15_5000iter_4LGSsquare.fits'
 				]
 
-strehlfilenames = ['SR_Hband_LgsAstRadius7p6arcsec_ZA30_5000iter_4LGSsquare.fits',			#Name of each strehl ratio FITS file
+strehlfilenames = ['SR_Hband_LgsAstRadius7p6arcsec_ZA30_5000iter_4LGSsquare.fits',				#Name of each strehl ratio FITS file
 				'SR_Hband_LgsAstRadius7p6arcsec_ZA50_5000iter_4LGSsquare.fits',
 				'SR_Hband_LgsAstRadius7p6arcsec_ZA30_5000iter_4LGSsquare.fits',
 				'SR_Hband_LgsAstRadius7p6arcsec_ZA15_5000iter_4LGSsquare.fits',
