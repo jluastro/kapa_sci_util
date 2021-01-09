@@ -2,7 +2,7 @@ from astropy.io import fits
 import numpy as np
 import os
 
-# This python script takes in the strip of simulated psfs produced by Carlos and reformats them into a 4 dimensional array.
+# This python script takes in the strip of simulated psfs produced by Carlos and reformats them into a 4 dimensional FITS file.
 # The dimensions are [y position of psf, x position of psf, y pixel in psf, x pixel in psf.]
 # By Matthew Freeman
 
@@ -24,13 +24,12 @@ strehlfilenames = ['SR_Hband_LgsAstRadius7p6arcsec_ZA30_5000iter_4LGSsquare.fits
 				'SR_Hband_LgsAstRadius7p6arcsec_ZA15_5000iter_4LGSsquare.fits',
 				]
 
-labels = ["darkMatter",					#A label for the output FITS file
-			"galacticCenter",
-			"galaxyFormation",
-			"gasGiantPlanets"
+labels = ["dm",					#A label for the output FITS file
+			"gc",
+			"gf",
+			"gp"
 			]
 
-output_directory = './fits_output/'
 
 TT_offsets = [[-1.1172, 0.1056],			#x,y offset of primary tip tilt star in arcseconds. For plotting later.
 				[0,5.4],
@@ -41,7 +40,7 @@ TT_offsets = [[-1.1172, 0.1056],			#x,y offset of primary tip tilt star in arcse
 pixel_scale = 20.81/1000 #arcseconds per pixel
 psf_spacing = 2.0   #spacing between generated psfs in arcseconds
 laser_radius = 7.6  #LGS asterism radius in arcseconds
-
+output_directory = './fits_4D/'
 
 #------UNUSED PARAMETERS------
 wavelength = 1654 			#nanometers
@@ -93,6 +92,7 @@ def reshape(directory, FITSfilename,strehlfilename,label,n):
 	hdul[0].header['NGSX'] = (TT_offsets[n][0], 'NGS x offset (arcseconds)')
 	hdul[0].header['NGSY'] = (TT_offsets[n][1], 'NGS x offset (arcseconds)')
 	hdul[0].header['LGSRAD'] = (laser_radius, 'LGS radius (arcseconds)')
+	hdul[0].header['LABEL'] = label
 	hdul[0].header.comments['NAXIS1'] = 'pixel x'
 	hdul[0].header.comments['NAXIS2'] = 'pixel y'
 	hdul[0].header.comments['NAXIS3'] = 'psf x'

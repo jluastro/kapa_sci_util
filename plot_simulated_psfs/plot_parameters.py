@@ -11,7 +11,7 @@ import os
 #By Matthew Freeman.
 
 # -----PARAMETERS-----
-input_directory = './fits_output/'
+input_directory = './fits_4D/'
 output_directory = './plots/'
 fit_threshold = 0.05   	#all data below this fraction of the max will be masked out for the gaussian fit.
 plot_slices=False
@@ -34,7 +34,7 @@ def process_fits(directory, FITSfilename):
 
 	print("Processing", FITSfilename)
 
-	sim_parameters = {'label': FITSfilename[:-16],
+	sim_parameters = {'label': header['LABEL'],
 						'psf_spacing' : header['PSFSPACE'],
 						'pixel_scale' : header['PIXSCALE'],
 						'TT_offset' : [header['NGSX'],header['NGSY']],
@@ -115,7 +115,7 @@ def plot_psfs(data_grid,output_directory,sim_parameters):
 	psf_spacing = sim_parameters['psf_spacing']
 	laser_radius = sim_parameters['laser_radius']
 	plt.figure(0)
-	plt.imshow(data_grid, norm=LogNorm(vmin=np.min(data_grid), vmax=1E10),origin='lower', extent = (grid_size, -grid_size, -grid_size, grid_size))
+	plt.imshow(data_grid, norm=LogNorm(vmin=np.min(data_grid), vmax=np.max(data_grid)),origin='lower', extent = (grid_size, -grid_size, -grid_size, grid_size))
 	plt.plot([-laser_radius,0,0,laser_radius],[0,-laser_radius,laser_radius,0],'o',color='magenta')
 	plt.plot(sim_parameters['TT_offset'][0],sim_parameters['TT_offset'][1],'or')
 	plt.xlabel("East (arcseconds)")
@@ -187,22 +187,23 @@ def plot_strehl(strehl_grid,output_directory,sim_parameters):
 	plt.setp(ax.get_xticklabels()[0::2], visible=False)
 	plt.setp(ax.get_yticklabels()[0::2], visible=False)
 	cbar = plt.colorbar()
-	cbar.set_label("Strehl ratio (percentage)", rotation=90)
+	cbar.set_label("Strehl ratio", rotation=90)
 	plt.savefig(output_directory + sim_parameters['label'] + "_strehl.png", bbox_inches='tight', dpi=250)
 
 def plot_slice(data,i,j,fitted_gauss,mask_level,output_directory,sim_parameters):
 	psf_size = sim_parameters['psf_size']
+	mid = int(psf_size/2)
 	plt.figure(4)
 	plt.clf()
 	plt.plot([0,psf_size],[mask_level[i,j],mask_level[i,j]])
-	plt.plot(data[i,j,60,:],'.-',label="data")
-	plt.plot(np.linspace(50,70,501),fitted_gauss(np.linspace(50,70,501),60),label="fit")
+	plt.plot(data[i,j,mid,:],'.-',label="data")
+	plt.plot(np.linspace(mid-10,mid+10,501),fitted_gauss(np.linspace(mid-10,mid+10,501),mid),label="fit")
 	avg_fwhm = (fitted_gauss.x_fwhm + fitted_gauss.y_fwhm)/2
 	ax = plt.gca()
 	plt.text(0.9, 0.7,"FWHM = " + "  {:.2f}".format(avg_fwhm), horizontalalignment='center',verticalalignment='center',transform = ax.transAxes)
 	plt.legend()
-	plt.xlim([50, 70])
-	plt.xticks([50,55,60,65,70])
+	plt.xlim([mid-10, mid+10])
+	plt.xticks([mid-10,mid-5,mid,mid+5,mid+10])
 	plt.ylim([0, np.max(data)])
 	plt.savefig(output_directory + "gaussian_slice/" + sim_parameters['label'] + '/' + str(11*j+i) + ".jpg", bbox_inches='tight')	
 
