@@ -27,7 +27,7 @@ def nea_photons(m,wfs):
 	# ps = pixel scale (arcsec).  
 	# sigma_e = rms detector read noise per pixel
 	# theta_beta = spot size on detector (radians)
-	# pix_per_ap = pixels per subaperture
+	# pix_per_ap = pixels per subaperture, for noise calculation
 
 	if wfs == 'LBWFS':
 		band = "R"
@@ -52,7 +52,7 @@ def nea_photons(m,wfs):
 		sigma_e = 4										#from Carlos' config
 		theta_beta = 0.055 *(math.pi/180)/(60*60)		#Using OSIRIS FWHM from KAON 1303 Table 13 (as suggested by Peter)
 		throughput = 0.56								#from KAON 1303 Table 8
-		pix_per_ap = 24 								#from Carlos' config, pixels per lenslet
+		pix_per_ap = 4 									#ROI reduces from 16x16 to 2x2 as residual is reduced.
 	elif wfs == 'TRICK-K':
 		band = "K"
 		wavelength = 2.19e-6
@@ -60,7 +60,7 @@ def nea_photons(m,wfs):
 		sigma_e = 4										#from Carlos' config
 		theta_beta = 0.074 *(math.pi/180)/(60*60)		#Scaling the K band 0.055 by 2.19/1.63 (wavelength ratio)
 		throughput = 0.62								#from KAON 1303 Table 8
-		pix_per_ap = 24 								#from Carlos' config, pixels per lenslet
+		pix_per_ap = 4 									#ROI decreases from 16x16 to 2x2 as residual reduces
 	else:
 		print("Other wfs:", wfs)
 
@@ -75,7 +75,8 @@ def nea_photons(m,wfs):
 	# theta_beta = 3*math.pi*wavelength*np.sqrt(N_sa)/(16*D)		#Effective spot size of the subaperture NGS assuming a diffraction limited core. (eq 68)
 	SNR = Np/np.sqrt(Np+pix_per_ap*Nb+pix_per_ap*sigma_e**2)		#signal to noise ratio of a single subaperture (eq 66)
 	sigma_theta = theta_beta/SNR  *(180/math.pi) *60*60*1000		#noise equivalent angle in milliarcseconds (eq 65)
-	print("SNR =", SNR)
+	print("\n SNR:                                               {0}".format(
+	    SNR))
 	print("\n NEA:                                               {0}".format(
 	    sigma_theta))
 
